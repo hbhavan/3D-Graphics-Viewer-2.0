@@ -187,9 +187,7 @@ def clip(x0, y0, x1, y1):
 
 def apply_transformation(win, m):
     a = Matrix(1, 4)
-    d = Matrix(1, 4)
     a.set(0, 3, 1)
-    # d.set(0, 3, 1)
 
     for i in range(len(p_table)):
         a.set(0, 0, p_table[i][0])
