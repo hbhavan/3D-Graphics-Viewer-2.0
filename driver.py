@@ -4,22 +4,22 @@ from matrix import *
 import tkinter as tk
 import time
 
-rot_x_pos = rotate_x(0.01, 0, 0, 0)
-rot_x_neg = rotate_x(-0.01, 0, 0, 0)
-rot_y_pos = rotate_y(0.01, 0, 0, 0)
-rot_y_neg = rotate_y(-0.01, 0, 0, 0)
-rot_z_pos = rotate_z(0.01, 0, 0, 0)
-rot_z_neg = rotate_z(-0.01, 0, 0, 0)
+rot_x_pos = rotate_x(0.03, 0, 0, 0)
+rot_x_neg = rotate_x(-0.03, 0, 0, 0)
+rot_y_pos = rotate_y(0.03, 0, 0, 0)
+rot_y_neg = rotate_y(-0.03, 0, 0, 0)
+rot_z_pos = rotate_z(0.03, 0, 0, 0)
+rot_z_neg = rotate_z(-0.03, 0, 0, 0)
 
-trn_x_pos = translate(0.1, 0, 0)
-trn_x_neg = translate(-0.1, 0, 0)
-trn_y_pos = translate(0, 0.1, 0)
-trn_y_neg = translate(0, -0.1, 0)
-trn_z_pos = translate(0, 0, 0.1)
-trn_z_neg = translate(0, 0, -0.1)
+trn_x_pos = translate(0.3, 0, 0)
+trn_x_neg = translate(-0.3, 0, 0)
+trn_y_pos = translate(0, 0.3, 0)
+trn_y_neg = translate(0, -0.3, 0)
+trn_z_pos = translate(0, 0, 0.3)
+trn_z_neg = translate(0, 0, -0.3)
 
-scl_up = scale(0.99, 0.99, 0.99, 0, 0, 0)
-scl_dn = scale(1.01, 1.01, 1.01, 0, 0, 0)
+scl_up = scale(0.93, 0.95, 0.97, 0, 0, 0)
+scl_dn = scale(1.03, 1.03, 1.03, 0, 0, 0)
 
 identity = translate(0, 0, 0)
 
@@ -46,15 +46,24 @@ def read_file(file):
     fl = f.readlines()
 
     count = 0
-    for q in fl:
-        line = q.split(' ')
-        p = []
-
-        for num in line:
-            p.append(float(num))
-
-        set_points(p)
-        count += 1
+    i = 0
+    q = fl[0]
+    while q[0] != "~":
+        nums = q.split(' ')
+        point = []
+        for num in nums:
+            point.append(float(num))
+        set_point(point)
+        i += 1
+        q = fl[i]
+    i += 1
+    while i < len(fl):
+        nums = fl[i].split(' ')
+        line = []
+        for num in nums:
+            line.append(int(num))
+        set_line(line)
+        i += 1
 
     print('Read', count, ' lines from', file)
     return count

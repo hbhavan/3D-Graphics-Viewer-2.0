@@ -2,7 +2,8 @@ from graphics import *
 from matrix import *
 import math
 
-p = []  # Original 3D points
+p_table = []    # List of points
+l_table = []    # List of points that make up lines
 c = []  # Clipped coordinates
 s = []  # Screen coordinates
 
@@ -15,8 +16,12 @@ vsy = 400
 vcy = 400
 
 
-def set_points(q):
-    p.append(q)
+def set_point(q):
+    p_table.append(q)
+
+
+def set_line(e):
+    l_table.append(e)
 
 
 def get_cos_y(x, y):
@@ -99,34 +104,23 @@ def get_clipping_coordinates():
     a.set(0, 3, 1)
 
     c[:] = []
-    for q in p:
+    for q in p_table:
         a.set(0, 0, q[0])
         a.set(0, 1, q[1])
         a.set(0, 2, q[2])
 
         b = a.multiply(h)
 
-        a.set(0, 0, q[3])
-        a.set(0, 1, q[4])
-        a.set(0, 2, q[5])
-
-        d = a.multiply(h)
-
         c.append([b.at(0, 0),
                   b.at(0, 1),
-                  b.at(0, 2),
-                  d.at(0, 0),
-                  d.at(0, 1),
-                  d.at(0, 2)])
+                  b.at(0, 2)])
 
 
 def get_screen_coordinates():
     s[:] = []
     for q in c:
         s.append([int(((q[0] / q[2]) * vsx) + vcx),
-                  int(((q[1] / q[2]) * vsy) + vcy),
-                  int(((q[3] / q[5]) * vsx) + vcx),
-                  int(((q[4] / q[5]) * vsy) + vcy)])
+                  int(((q[1] / q[2]) * vsy) + vcy)])
 
 
 def clip(x0, y0, x1, y1):
@@ -195,38 +189,28 @@ def apply_transformation(win, m):
     a = Matrix(1, 4)
     d = Matrix(1, 4)
     a.set(0, 3, 1)
-    d.set(0, 3, 1)
+    # d.set(0, 3, 1)
 
-    for i in range(len(p)):
-        a.set(0, 0, p[i][0])
-        a.set(0, 1, p[i][1])
-        a.set(0, 2, p[i][2])
+    for i in range(len(p_table)):
+        a.set(0, 0, p_table[i][0])
+        a.set(0, 1, p_table[i][1])
+        a.set(0, 2, p_table[i][2])
 
         b = a.multiply(m)
 
-        p[i][0] = b.at(0, 0)
-        p[i][1] = b.at(0, 1)
-        p[i][2] = b.at(0, 2)
-
-        d.set(0, 0, p[i][3])
-        d.set(0, 1, p[i][4])
-        d.set(0, 2, p[i][5])
-
-        e = d.multiply(m)
-
-        p[i][3] = e.at(0, 0)
-        p[i][4] = e.at(0, 1)
-        p[i][5] = e.at(0, 2)
+        p_table[i][0] = b.at(0, 0)
+        p_table[i][1] = b.at(0, 1)
+        p_table[i][2] = b.at(0, 2)
 
     draw(win)
 
 
-def render(win, q):
-    x0 = q[0]
-    y0 = q[1]
+def render(win, p0, p1):
+    x0 = p0[0]
+    y0 = p0[1]
 
-    x1 = q[2]
-    y1 = q[3]
+    x1 = p1[0]
+    y1 = p1[1]
 
     dX = x1 - x0
     dY = y1 - y0
@@ -334,8 +318,8 @@ def draw(win):
     get_clipping_coordinates()
     get_screen_coordinates()
 
-    for q in s:
-        render(win, q)
+    for line in l_table:
+        render(win, s[line[0]], s[line[1]])
 
 
 def print_3d_points():
